@@ -1,6 +1,6 @@
 import React from 'react';
 
-function AuthPage() {
+const AuthPage = (props) => {
     return (
         <h1>The Auth Page</h1>
     );

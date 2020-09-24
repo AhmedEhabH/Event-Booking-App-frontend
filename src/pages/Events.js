@@ -1,6 +1,6 @@
 import React from 'react';
 
-function EventsPage() {
+const EventsPage = (props) => {
     return (
         <h1>The Events Page</h1>
     );

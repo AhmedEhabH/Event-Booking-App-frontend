@@ -1,6 +1,6 @@
 import React from 'react';
 
-function BookingsPage() {
+const BookingsPage = (props) => {
     return (
         <h1>The Bookings Page</h1>
     );

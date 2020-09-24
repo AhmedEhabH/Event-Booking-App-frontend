@@ -1,21 +1,32 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+
+import AuthContext from '../context/auth-context';
 
 import './Auth.css'
 
-const AuthPage = (props) => {
+class AuthPage extends Component {
+    state = {
+        isLogin: true
+    };
 
-    const [isLogin, setIsLogin] = useState(true);
-    const switchModeHandler = () => {
-        setIsLogin(!isLogin)
+    static contextType = AuthContext;
+
+    constructor(props) {
+        super(props);
+        this.emailEl = React.createRef();
+        this.passwordEl = React.createRef();
     }
 
-    let emailEl = React.createRef();
-    let passwordEl = React.createRef();
+    switchModeHandler = () => {
+        this.setState(prevState => {
+            return { isLogin: !prevState.isLogin };
+        });
+    };
 
-    const submitHandler = (event) => {
+    submitHandler = event => {
         event.preventDefault();
-        const email = emailEl.current.value;
-        const password = passwordEl.current.value;
+        const email = this.emailEl.current.value;
+        const password = this.passwordEl.current.value;
 
         if (email.trim().length === 0 || password.trim().length === 0) {
             return;
@@ -23,35 +34,31 @@ const AuthPage = (props) => {
 
         let requestBody = {
             query: `
-                query{
-                    login(email:"${email}", password:"${password}"){
-                        userId
-                        token
-                        tokenExpiration
+          query {
+            login(email: "${email}", password: "${password}") {
+              userId
+              token
+              tokenExpiration
+            }
+          }
+        `
+        };
 
-                    }
-                }
-            `
-        }
-
-        if (isLogin) {
+        if (!this.state.isLogin) {
             requestBody = {
                 query: `
-                    mutation{
-                        createUser(userInput:{
-                            email:"${email}",
-                            password:"${password}"
-                        }){
-                            _id
-                            email
-                        }
-                    }
-                `
+            mutation {
+              createUser(userInput: {email: "${email}", password: "${password}"}) {
+                _id
+                email
+              }
+            }
+          `
             };
         }
 
-        fetch('http://127.0.0.1:8000/graphql', {
-            method: "POST",
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
             body: JSON.stringify(requestBody),
             headers: {
                 'Content-Type': 'application/json'
@@ -59,36 +66,44 @@ const AuthPage = (props) => {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                    throw new Error("Failed!");
+                    throw new Error('Failed!');
                 }
                 return res.json();
             })
             .then(resData => {
-                console.log(resData);
+                if (resData.data.login.token) {
+                    this.context.login(
+                        resData.data.login.token,
+                        resData.data.login.userId,
+                        resData.data.login.tokenExpiration
+                    );
+                }
             })
             .catch(err => {
-                console.error(err);
+                console.log(err);
             });
+    };
+
+    render() {
+        return (
+            <form className="auth-form" onSubmit={this.submitHandler}>
+                <div className="form-control">
+                    <label htmlFor="email">E-Mail</label>
+                    <input type="email" id="email" ref={this.emailEl} />
+                </div>
+                <div className="form-control">
+                    <label htmlFor="password">Password</label>
+                    <input type="password" id="password" ref={this.passwordEl} />
+                </div>
+                <div className="form-actions">
+                    <button type="submit">Submit</button>
+                    <button type="button" onClick={this.switchModeHandler}>
+                        Switch to {this.state.isLogin ? 'Signup' : 'Login'}
+                    </button>
+                </div>
+            </form>
+        );
     }
-
-    return (
-        <form className="auth-form" onSubmit={submitHandler}>
-            <div className="form-control">
-                <label htmlFor="email">Email</label>
-                <input type="email" id='email' ref={emailEl} />
-            </div>
-
-            <div className="form-control">
-                <label htmlFor="password">Password</label>
-                <input type="password" id='password' ref={passwordEl} />
-            </div>
-
-            <div className="form-actions">
-                <button type="submit">Submit</button>
-                <button type="button" onClick={switchModeHandler}>Switch to {isLogin ? "Login" : "Signup"}</button>
-            </div>
-        </form>
-    );
 }
 
 export default AuthPage;

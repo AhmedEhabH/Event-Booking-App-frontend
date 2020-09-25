@@ -9,7 +9,7 @@ const modal = (props) => {
                 <h1>{props.title}</h1>
             </header>
             <section className="modal__content">
-                {props.childern}
+                {props.children}
             </section>
             <section className="modal__actions">
                 {props.canCancel && <button className="btn" onClick={props.onCancel}>Cancel</button>}

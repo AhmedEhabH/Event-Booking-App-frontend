@@ -25,7 +25,7 @@ const App = () => {
 
     return (
         <BrowserRouter>
-            <React.Fragment>
+            <>
                 <AuthContext.Provider
                     value={{
                         token: token,
@@ -37,7 +37,6 @@ const App = () => {
                     <MainNavigation />
                     <main className="main-content">
                         <Switch>
-                            {!token && <Redirect from="/" to="/auth" exact />}
                             {token && <Redirect from="/" to="/events" exact />}
                             {token && <Redirect from="/auth" to="/events" exact />}
                             {!token && (
@@ -47,10 +46,11 @@ const App = () => {
                             {token && (
                                 <Route path="/bookings" component={BookingsPage} />
                             )}
+                            {!token && <Redirect to='/auth' />}
                         </Switch>
                     </main>
                 </AuthContext.Provider>
-            </React.Fragment>
+            </>
         </BrowserRouter>
     );
 }

@@ -14,12 +14,17 @@ const EventsPage = (props) => {
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [isActive, setIsActive] = useState(true);
 
-    const context = useContext(AuthContext)
+    const context = useContext(AuthContext);
 
     useEffect(() => {
-        fetchEvents()
-    }, [])
+        fetchEvents();
+        return () => {
+            setIsActive(false);
+        }
+    }, []);
+
 
     const titleElRef = React.createRef();
     const priceElRef = React.createRef();
@@ -140,8 +145,10 @@ const EventsPage = (props) => {
                 return res.json()
             })
             .then(resData => {
-                setEvents(resData.data.events);
-                setIsLoading(false);
+                if (isActive) {
+                    setEvents(resData.data.events);
+                    setIsLoading(false);
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -155,8 +162,48 @@ const EventsPage = (props) => {
     }
 
     const bookEventHandler = () => {
+        if (!context.token) {
+            setSelectedEvent(null);
+            return;
+        }
+        const requestBody = {
+            query: `
+                mutation {
+                    bookEvent(eventId: "${selectedEvent._id}") {
+                        _id
+                        createdAt
+                        updatedAt
+                    }
+                }
+            `
+        };
 
+        fetch(
+            'http://127.0.0.1:8000/graphql',
+            {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${context.token}`
+                }
+            }
+        )
+            .then(res => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error("Failed");
+                }
+                return res.json()
+            })
+            .then(resData => {
+                console.log(resData);
+                setSelectedEvent(null);
+            })
+            .catch(err => {
+                console.error(err);
+            })
     }
+
     return (
         <>
             {(creating || selectedEvent) && <Backdrop />}
@@ -201,7 +248,7 @@ const EventsPage = (props) => {
                         canConfirm
                         onCancel={modalCancelHandler}
                         onConfirm={bookEventHandler}
-                        confirmText="Book"
+                        confirmText={context.token ? "Book" : "Confirm"}
                     >
                         <h1>{selectedEvent.title}</h1>
                         <h2>

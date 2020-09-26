@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 
 import AuthContext from '../context/auth-context';
 
@@ -14,14 +14,15 @@ const EventsPage = (props) => {
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const [isActive, setIsActive] = useState(true);
+
+    const isActive = useRef(true);
 
     const context = useContext(AuthContext);
 
     useEffect(() => {
         fetchEvents();
         return () => {
-            setIsActive(false);
+            isActive.current = false;
         }
     }, []);
 
@@ -145,7 +146,7 @@ const EventsPage = (props) => {
                 return res.json()
             })
             .then(resData => {
-                if (isActive) {
+                if (isActive.current) {
                     setEvents(resData.data.events);
                     setIsLoading(false);
                 }

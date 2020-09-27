@@ -57,12 +57,12 @@ const EventsPage = (props) => {
 
         const requestBody = {
             query: `
-                mutation {
-                    createEvent(eventInput: {
-                        title: "${title}",
-                        price: ${price},
-                        description: "${description}",
-                        date: "${date}"
+                mutation CreateEvent($title:String!, $price: Float!, $desc: String!, $date: String!) {
+                    createEvent (eventInput: {
+                        title: $title,
+                        price: $price,
+                        description: $desc,
+                        date: $date
                     }){
                         _id
                         title
@@ -71,7 +71,13 @@ const EventsPage = (props) => {
                         price
                     }
                 }
-            `
+            `,
+            variables: {
+                title: title,
+                price: price,
+                desc: description,
+                date: date
+            }
         }
 
         fetch(
@@ -169,14 +175,17 @@ const EventsPage = (props) => {
         }
         const requestBody = {
             query: `
-                mutation {
-                    bookEvent(eventId: "${selectedEvent._id}") {
+                mutation BookEvent($id: ID!) {
+                    bookEvent (eventId: $id) {
                         _id
                         createdAt
                         updatedAt
                     }
                 }
-            `
+            `,
+            variables: {
+                id: selectedEvent._id
+            }
         };
 
         fetch(

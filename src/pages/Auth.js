@@ -78,6 +78,9 @@ const AuthPage = () => {
                         resData.data.login.tokenExpiration
                     );
                 }
+                if (!isLogin){
+                    setIsLogin(true);
+                }
             })
             .catch(err => {
                 console.log(err);

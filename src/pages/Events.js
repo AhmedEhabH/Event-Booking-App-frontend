@@ -81,7 +81,7 @@ const EventsPage = (props) => {
         }
 
         fetch(
-            '/graphql',
+            'https://booking-event-backend.herokuapp.com/graphql',
             {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
@@ -136,7 +136,7 @@ const EventsPage = (props) => {
         };
 
         fetch(
-            '/graphql',
+            'https://booking-event-backend.herokuapp.com/graphql',
             {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
@@ -189,7 +189,7 @@ const EventsPage = (props) => {
         };
 
         fetch(
-            '/graphql',
+            'https://booking-event-backend.herokuapp.com/graphql',
             {
                 method: 'POST',
                 body: JSON.stringify(requestBody),

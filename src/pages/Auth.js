@@ -57,7 +57,7 @@ const AuthPage = () => {
             };
         }
 
-        fetch('/graphql', {
+        fetch('https://booking-event-backend.herokuapp.com/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),
             headers: {

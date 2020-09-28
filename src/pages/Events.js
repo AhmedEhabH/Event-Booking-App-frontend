@@ -81,7 +81,7 @@ const EventsPage = (props) => {
         }
 
         fetch(
-            'http://localhost:8000/graphql',
+            '/graphql',
             {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
@@ -136,7 +136,7 @@ const EventsPage = (props) => {
         };
 
         fetch(
-            'http://127.0.0.1:8000/graphql',
+            '/graphql',
             {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
@@ -189,7 +189,7 @@ const EventsPage = (props) => {
         };
 
         fetch(
-            'http://127.0.0.1:8000/graphql',
+            '/graphql',
             {
                 method: 'POST',
                 body: JSON.stringify(requestBody),

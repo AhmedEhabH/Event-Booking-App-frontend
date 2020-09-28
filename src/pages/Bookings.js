@@ -38,7 +38,7 @@ const BookingsPage = props => {
         }
 
         fetch(
-            'http://127.0.0.1:8000/graphql',
+            '/graphql',
             {
                 method: 'POST',
                 body: JSON.stringify(requestBody),
@@ -83,7 +83,7 @@ const BookingsPage = props => {
         }
 
         fetch(
-            'http://127.0.0.1:8000/graphql',
+            '/graphql',
             {
                 method: 'POST',
                 body: JSON.stringify(requestBody),

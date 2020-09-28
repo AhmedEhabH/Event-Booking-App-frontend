@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
 import AuthPage from './pages/Auth';
@@ -16,12 +16,41 @@ const App = () => {
     const login = (token, userId, tokenExpiration) => {
         setToken(token);
         setUserId(userId);
+        localStorage.setItem('token', token);
+        localStorage.setItem('expToken', tokenExpiration);
+        localStorage.setItem('savedTime', new Date().getTime());
     };
 
     const logout = () => {
         setToken(null);
         setUserId(null);
+        localStorage.clear();
     };
+
+    const checkToken = () => {
+        const token = localStorage.getItem('token');
+        const time = localStorage.getItem('expToken');
+        const savedTime = localStorage.getItem('savedTime');
+        if (
+            token
+            &&
+            savedTime
+            &&
+            (new Date().getTime() - savedTime > time * 60 * 60 * 1000)
+        ) {
+            localStorage.clear();
+        } else {
+            const tokenLocalStorage = localStorage.getItem('token');
+            if (tokenLocalStorage) {
+                setToken(localStorage.getItem('token'));
+            }
+        }
+    };
+
+
+    useEffect(() => {
+        checkToken();
+    });
 
     return (
         <BrowserRouter>

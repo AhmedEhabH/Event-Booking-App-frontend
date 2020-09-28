@@ -55,7 +55,6 @@ const BookingsPage = props => {
                 return res.json();
             })
             .then(resData => {
-                console.log(resData);
                 setIsLoading(false);
                 setBookings(resData.data.bookings);
             })
@@ -101,7 +100,6 @@ const BookingsPage = props => {
                 return res.json();
             })
             .then(resData => {
-                console.log(resData);
                 setIsLoading(false);
                 const updatedBookings = bookings.filter(booking => {
                     return booking._id !== bookingId;
